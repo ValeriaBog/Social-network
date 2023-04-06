@@ -1,0 +1,19 @@
+
+.content {
+    grid-area: content;
+    background: darkseagreen;
+}
+
+.item {
+    color: teal;
+
+}
+.item img{
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+}
+.postAll{
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
