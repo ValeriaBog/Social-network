@@ -1,25 +1,52 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import classes from './MyPosts.module.css';
 import Posts from "./Posts/Posts";
+import {
+    ActionsType,
+    postsType,
+} from "../../../redux/State";
+import {addPostActionCreator, updateNewPostTextActionCreator} from "../../../redux/profile-reduce";
+
+type myPostsPropsType = {
+    profilePage: postsType[]
+    dispatch: (action: ActionsType)=>void
+    upDateText: string
 
 
-const MyPosts = () => {
+}
+
+const MyPosts = (props: myPostsPropsType) => {
+
+    const addTaskTextAreaRef = useRef<HTMLTextAreaElement>(null)
+
+    const onClickHandler = () => {
+            props.dispatch(addPostActionCreator())
+    }
+
+    const onPostChange=()=>{
+        if(addTaskTextAreaRef.current){
+            const text = addTaskTextAreaRef.current.value
+            props.dispatch(updateNewPostTextActionCreator(text))
+        }
+    }
 
     return (
         <div>
             <div className={classes.postsBlock}>
-              <h3>My Posts</h3>
-                <div >
-                    <div><textarea></textarea></div>
-                    <div><button>Add post</button></div>
+                <h3>My Posts</h3>
+                <div>
+                    <div><textarea onChange={onPostChange}
+                                   ref={addTaskTextAreaRef}
+                                   value={props.upDateText} />
+                    </div>
+                    <div>
+                        <button onClick={onClickHandler}>Add post</button>
+                    </div>
                 </div>
                 <div className={classes.posts}>
-                    <Posts message='Hi! What are you doing now?' likeCounter='17'/>
-                    <Posts message="It's my first post" likeCounter='43'/>
-                    <Posts message='What do uou think about me?' likeCounter='10'/>
-                    <Posts message="I can tell you about yourself If you don't mind!" likeCounter='22'/>
-                    <Posts message='Would you like to go to film with me?' likeCounter='5'/>
-
+                    {props.profilePage.map(e => {
+                        return <Posts message={e.message} likeCounter={e.likeCounter}/>
+                    })}
                 </div>
             </div>
         </div>

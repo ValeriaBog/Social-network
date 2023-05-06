@@ -4,23 +4,36 @@ import Header from "./components/header/Header";
 import Navbar from "./components/navbar/Navbar";
 import Profile from "./components/profile/Profile";
 import Dialogs from "./components/dialogs/Dialogs";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
+import {ActionsType, appStateType, StoreType} from "./redux/State";
 
 
-function App() {
+export type appPropsType = {
+    state: appStateType
+    dispatch: (action: ActionsType) => void
+    store: StoreType
+}
+
+
+function App(props: appPropsType) {
     return (
-        <BrowserRouter>
         <div className='app-wrapper'>
             <Header/>
             <Navbar/>
             <div className='app-wrapper-content'>
                 <Routes>
-                    <Route path="/profile" element={<Profile/>}/>
-                    <Route path="/dialogs" element={<Dialogs/>}/>
+                    <Route path="/profile" element={<Profile state={props.state}
+                                                             dispatch={props.dispatch}/>}/>
+                    <Route path="/dialogs"
+                           element={
+                               <Dialogs dispatch={props.dispatch}
+                                        store={props.store}
+                               />
+                           }/>
                 </Routes>
             </div>
         </div>
-        </BrowserRouter>
+
     );
 }
 

@@ -1,49 +1,47 @@
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 import classes from "./Dialogs.module.css";
-import {NavLink} from "react-router-dom";
+import {DialogsItems} from "./DialogItems/DialogsItems";
+import {DialogsMessages} from "./Message/Message";
+import {ActionsType, StoreType,} from "../../redux/State";
+import {sendMessageCreator, updateNewMessageBodyCreator} from "../../redux/dialogs-reduce";
 
-type DialogsItemsType={
-    name: string
-    id: number
+type dialogsPropsType = {
+    dispatch: (action: ActionsType) => void
+    store: StoreType
 }
+const Dialogs = (props: dialogsPropsType) => {
 
-type DialogsMessagesType={
-    message: string
-}
+    const state = props.store.getState().messagesPage
 
-const DialogsItems = (props: DialogsItemsType) => {
-    return (
-        <div className={classes.dialog + ' ' + classes.active}>
-            <NavLink to={'/dialogs/'+props.id}>{props.name} </NavLink>
-        </div>
-    )
-}
+    const onSendMessageClick = () => {
+        props.store.dispatch(sendMessageCreator())
+    }
+    const onNewMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        const body = e.target.value
+        props.store.dispatch(updateNewMessageBodyCreator(body))
 
-const DialogsMessages = (props: DialogsMessagesType) => {
-    return (
-        <div className={classes.dialog}>
-            {props.message}
-        </div>
-    )
-}
 
-const Dialogs = () => {
+    }
+
     return (
         <div className={classes.dialogs}>
             <div className={classes.dialogsItems}>
-                <DialogsItems name={'Ivan'} id={1}/>
-                <DialogsItems name={'Kate'} id={2}/>
-                <DialogsItems name={'Misha'} id={3}/>
-                <DialogsItems name={'Tasha'} id={4}/>
-                <DialogsItems name={'Olga'} id={5}/>
-                <DialogsItems name={'Anna'} id={6}/>
-                <DialogsItems name={'Helen'} id={7}/>
-                <DialogsItems name={'Alex'} id={8}/>
+                {state.dialogs.map(e => {
+                    return <DialogsItems name={e.name} id={e.id}/>
+                })}
             </div>
             <div className={classes.messages}>
-                <DialogsMessages message={'Hi!'}/>
-                <DialogsMessages message={'How are you doing?'}/>
-                <DialogsMessages message={'Cool!'}/>
+                {state.messages.map(e => {
+                    return <DialogsMessages message={e.message}/>
+                })}
+                <div>
+                    <div> <textarea value={state.newMessageBody}
+                                    placeholder={'Enter your message...'}
+                                    onChange={onNewMessageChange}></textarea></div>
+                    <div>
+                        <button onClick={onSendMessageClick}>ADD</button>
+                    </div>
+                </div>
             </div>
         </div>
 

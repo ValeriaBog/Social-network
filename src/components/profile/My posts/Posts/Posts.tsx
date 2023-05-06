@@ -1,7 +1,12 @@
 import React from 'react';
 import classes from './Posts.module.css';
 
-const Posts = (props: any) => {
+
+type postsType = {
+    message: string
+    likeCounter: string
+}
+const Posts = (props: postsType) => {
     return (
         <div className={classes.postAll}>
             <div className={classes.item}>
